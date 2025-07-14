@@ -544,12 +544,10 @@
         const sisterInLaw = 'Sister-in-Law';
         const brotherInLaw = 'Brother-in-Law';
         const maleCelebrities = [
-            'Ryan Reynolds', 'Chris Hemsworth', 'Leonardo DiCaprio', 'Brad Pitt',
-            'Dwayne "The Rock" Johnson', 'George Clooney', 'Will Smith', 'Tom Hanks'
+            'Owen Wilson', 'Benedict Cumberbatch', 'Rupert Grint', 'Dad'
         ];
         const femaleCelebrities = [
-            'Scarlett Johansson', 'Jennifer Aniston', 'Angelina Jolie', 'Gal Gadot',
-            'Sandra Bullock', 'Julia Roberts', 'Beyoncé', 'Rihanna'
+            'Priyanka Chopra', 'Halle Berry', 'Zendaya', 'Mindy Kaling', 'Mom'
         ];
 
         // Generate all possible parent combinations
@@ -567,33 +565,33 @@
         const gameData = [
             {
                 babyId: 'baby1',
-                babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/b_chris_priyanka.jpg', /* Softer pink placeholder */
-                correctParents: { mom: sisterInLaw, dad: 'Ryan Reynolds' }
+                babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/baby_1_dad_priyanka.jpg', /* Softer pink placeholder */
+                correctParents: { mom: brotherInLaw, dad: 'Priyanka Chopra' }
             },
             {
                 babyId: 'baby2',
-                babyImage: 'https://placehold.co/300x300/fdf6fa/7a4d64?text=Baby+2', /* Softer pink placeholder */
-                correctParents: { mom: brotherInLaw, dad: 'Angelina Jolie' }
+                babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/baby_2_mom_owen.jpg', /* Softer pink placeholder */
+                correctParents: { mom: sisterInLaw, dad: 'Owen Wilson' }
             },
             {
                 babyId: 'baby3',
-                babyImage: 'https://placehold.co/300x300/fdf6fa/7a4d64?text=Baby+3', /* Softer pink placeholder */
-                correctParents: { mom: sisterInLaw, dad: 'Dwayne "The Rock" Johnson' }
+                babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/baby_3_dad_halle.jpg', /* Softer pink placeholder */
+                correctParents: { mom: brotherInLaw, dad: 'Halle Berry' }
             },
             {
                 babyId: 'baby4',
-                babyImage: 'https://placehold.co/300x300/fdf6fa/7a4d64?text=Baby+4', /* Softer pink placeholder */
-                correctParents: { mom: brotherInLaw, dad: 'Beyoncé' }
+                babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/baby_4_dad_mom_light.jpg', /* Softer pink placeholder */
+                correctParents: { mom: sisterInLaw, dad: brotherInLaw }
             },
             {
                 babyId: 'baby5',
-                babyImage: 'https://placehold.co/300x300/fdf6fa/7a4d64?text=Baby+5', /* Softer pink placeholder */
+                babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/baby_5_dad_mom.jpg', /* Softer pink placeholder */
                 correctParents: { mom: sisterInLaw, dad: 'Leonardo DiCaprio' }
             },
             {
                 babyId: 'baby6',
-                babyImage: 'https://placehold.co/300x300/fdf6fa/7a4d64?text=Baby+6', /* Softer pink placeholder */
-                correctParents: { mom: brotherInLaw, dad: 'Gal Gadot' }
+                babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/baby_6_dad_zendaya.jpg', /* Softer pink placeholder */
+                correctParents: { mom: brotherInLaw, dad: 'Zendaya' }
             }
             // Add more baby data here as needed!
         ];
@@ -602,22 +600,13 @@
         const celebrityImages = {
             'Sister-in-Law': 'https://placehold.co/60x60/fce8f0/7a4d64?text=SIL', /* Softer pink placeholder */
             'Brother-in-Law': 'https://placehold.co/60x60/fce8f0/7a4d64?text=BIL', /* Softer pink placeholder */
-            'Ryan Reynolds': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=RR', /* Softer pink placeholder */
-            'Chris Hemsworth': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=CH', /* Softer pink placeholder */
-            'Scarlett Johansson': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=SJ', /* Softer pink placeholder */
-            'Jennifer Aniston': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=JA', /* Softer pink placeholder */
-            'Leonardo DiCaprio': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=LD', /* Softer pink placeholder */
-            'Angelina Jolie': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=AJ', /* Softer pink placeholder */
-            'Brad Pitt': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=BP', /* Softer pink placeholder */
-            'Gal Gadot': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=GG', /* Softer pink placeholder */
-            'Dwayne "The Rock" Johnson': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=TRJ', /* Softer pink placeholder */
-            'Sandra Bullock': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=SB', /* Softer pink placeholder */
-            'Tom Hanks': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=TH', /* Softer pink placeholder */
-            'Julia Roberts': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=JR', /* Softer pink placeholder */
-            'George Clooney': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=GC', /* Softer pink placeholder */
-            'Beyoncé': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=B', /* Softer pink placeholder */
-            'Will Smith': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=WS', /* Softer pink placeholder */
-            'Rihanna': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=R' /* Softer pink placeholder */
+            'Owen Wilson': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=RR', /* Softer pink placeholder */
+            'Benedict Cumberbatch': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=CH', /* Softer pink placeholder */
+            'Rupert Grint': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=SJ', /* Softer pink placeholder */
+            'Priyanka Chopra': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=JA', /* Softer pink placeholder */
+            'Halle Berry': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=LD', /* Softer pink placeholder */
+            'Mindy Kaling': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=AJ', /* Softer pink placeholder */
+    
         };
 
         // State to manage current matches: { babyId: { comboId: '...', mom: '...', dad: '...' } }
