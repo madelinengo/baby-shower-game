@@ -54,7 +54,7 @@
 
         /* Baby Pictures Section */
         .babies-section {
-            flex: 2; /* Baby column is twice as wide */
+            flex: 3; /* Baby column is now three times as wide */
             padding: 10px; /* Adjusted padding */
             border-radius: 15px;
             background-color: #fefefe; /* Very light, almost white pink background for sections */
@@ -67,7 +67,7 @@
             height: 800px; /* Fixed height for both columns */
         }
         .parents-section {
-            flex: 1; /* Parent column takes remaining space */
+            flex: 2; /* Parent column takes more space, now two times as wide */
             padding: 10px; /* Adjusted padding */
             border-radius: 15px;
             background-color: #fefefe; /* Very light, almost white pink background for sections */
@@ -122,7 +122,7 @@
             padding: 8px; /* Adjusted padding */
             border: 2px dashed #f9d8e5; /* Softer pink dashed border */
             text-align: center;
-            min-height: 300px; /* Increased min-height to accommodate wider image and dropped card */
+            min-height: 350px; /* Increased min-height to accommodate larger images in dropped card */
             display: flex; /* Make it a flex container */
             flex-direction: column; /* Stack contents vertically */
             align-items: center;
@@ -139,7 +139,7 @@
         @media (min-width: 768px) {
             .baby-card {
                 padding: 15px;
-                min-height: 380px; /* Increased min-height for desktop */
+                min-height: 450px; /* Increased min-height for desktop to fit larger images */
                 max-width: 350px; /* Allow wider cards on larger screens */
             }
         }
@@ -211,7 +211,7 @@
             padding: 8px; /* Adjusted padding */
             border-radius: 12px;
             border: 2px solid #f9d8e5; /* Softer pink border */
-            font-size: 0.8rem; /* Adjusted font size */
+            font-size: 0.75rem; /* Smaller font size for names */
             font-weight: 600;
             cursor: grab;
             transition: all 0.2s ease;
@@ -221,16 +221,16 @@
             align-items: center;
             gap: 4px; /* Adjusted gap */
             width: 100%; /* Take full width of its flex container */
-            max-width: 180px; /* Max width for individual parent cards */
+            max-width: 200px; /* Increased max width for individual parent cards */
             flex-shrink: 0;
             touch-action: none;
         }
         @media (min-width: 768px) {
             .parent-card {
                 padding: 15px;
-                font-size: 1rem;
+                font-size: 0.85rem; /* Slightly larger on desktop */
                 gap: 8px;
-                max-width: 300px;
+                max-width: 320px; /* Increased max width for desktop */
             }
         }
         .parent-card:hover {
@@ -250,9 +250,9 @@
         .baby-card .dropped-parent-card {
             position: static;
             transform: none;
-            width: calc(100% - 16px);
-            height: auto;
-            margin-top: 10px;
+            width: calc(100% - 16px); /* Take full width of parent, minus padding */
+            height: auto; /* Height determined by content */
+            margin-top: 10px; /* Space below baby image */
             background-color: #f29ecf; /* Softer medium pink when dropped */
             color: white;
             border-color: #d9669e; /* Softer darker pink border */
@@ -271,22 +271,26 @@
         @media (min-width: 768px) {
             .baby-card .dropped-parent-card {
                 padding: 8px;
-                width: calc(100% - 30px);
+                width: calc(100% - 30px); /* Adjusted for larger padding on baby-card */
                 gap: 4px;
             }
         }
         .baby-card .dropped-parent-card .celebrity-images-wrapper {
             margin-bottom: 3px;
+            display: flex; /* Ensure images are side-by-side */
+            gap: 8px; /* More space between parent images */
         }
         .baby-card .dropped-parent-card .celebrity-image {
-            width: 35px;
-            height: 35px;
+            width: 70px; /* Larger size for reference images on mobile */
+            height: 70px;
+            border-radius: 50%; /* Keep them circular */
             border: 2px solid rgba(255, 255, 255, 0.8);
         }
         @media (min-width: 768px) {
             .baby-card .dropped-parent-card .celebrity-image {
-                width: 40px;
-                height: 40px;
+                width: 90px; /* Even larger on desktop */
+                height: 90px;
+                gap: 10px;
             }
         }
         .baby-card .dropped-parent-card .names-span {
@@ -330,11 +334,11 @@
         .celebrity-images-wrapper {
             display: flex;
             justify-content: center;
-            gap: 3px;
+            gap: 5px; /* Increased gap between images in parent card */
         }
         .celebrity-image {
-            width: 40px;
-            height: 40px;
+            width: 50px; /* Larger size for parent card images on mobile */
+            height: 50px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid rgba(255, 255, 255, 0.5);
@@ -342,19 +346,19 @@
         }
         @media (min-width: 768px) {
             .celebrity-image {
-                width: 50px;
-                height: 50px;
-                gap: 5px;
+                width: 60px; /* Even larger on desktop */
+                height: 60px;
+                gap: 8px; /* More gap on desktop */
             }
         }
         .names-span {
-            font-size: 0.85rem;
+            font-size: 0.75rem; /* Smaller font size for names */
             color: #7a4d64; /* Softer darker pink text */
             text-align: center;
         }
         @media (min-width: 768px) {
             .names-span {
-                font-size: 0.95rem;
+                font-size: 0.85rem; /* Slightly larger on desktop */
             }
         }
         .action-button {
@@ -479,7 +483,7 @@
             padding: 8px;
             border-radius: 12px;
             border: 2px solid #f9d8e5; /* Match parent-card border */
-            font-size: 0.8rem;
+            font-size: 0.75rem; /* Match parent-card font size */
             font-weight: 600;
             display: flex;
             flex-direction: column;
@@ -488,15 +492,15 @@
             width: 140px;
         }
         .touch-dragging-clone .celebrity-image {
-            width: 40px;
-            height: 40px;
+            width: 50px; /* Match parent-card image size */
+            height: 50px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid rgba(255, 255, 255, 0.5);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .touch-dragging-clone .names-span {
-            font-size: 0.85rem;
+            font-size: 0.75rem; /* Match parent-card font size */
             color: #7a4d64;
             text-align: center;
         }
