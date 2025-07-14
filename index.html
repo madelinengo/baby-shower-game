@@ -1,9 +1,1069 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ... (full code as provided by you) ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Shower Guessing Game</title>
+    <!-- Tailwind CSS CDN for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the drag-and-drop layout and elements */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdf2f8; /* Softer very light pink background */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align items to the top for better scrolling */
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px; /* Reduced padding for very small screens */
+            box-sizing: border-box;
+        }
+        .game-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 15px; /* Adjusted padding */
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Adjusted gap */
+            border: 2px solid #fce8f0; /* Softer light pink border */
+        }
+        @media (min-width: 768px) {
+            .game-container {
+                padding: 30px; /* Original padding for larger screens */
+                gap: 20px; /* Original gap */
+            }
+        }
+
+        .game-content {
+            display: flex; /* Always flex */
+            flex-direction: row; /* Always row for two columns */
+            justify-content: space-around; /* Distribute space */
+            align-items: flex-start; /* Align items to the top */
+            gap: 15px; /* Adjusted gap for smaller screens */
+        }
+        @media (min-width: 768px) {
+            .game-content {
+                gap: 30px; /* Original gap for larger screens */
+            }
+        }
+
+        /* Baby Pictures Section */
+        .babies-section {
+            flex: 2; /* Baby column is twice as wide */
+            padding: 10px; /* Adjusted padding */
+            border-radius: 15px;
+            background-color: #fefefe; /* Very light, almost white pink background for sections */
+            border: 1px solid #fdeff4; /* Softer lighter pink border */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 140px; /* Ensure a minimum width for columns */
+            height: 800px; /* Fixed height for both columns */
+        }
+        .parents-section {
+            flex: 1; /* Parent column takes remaining space */
+            padding: 10px; /* Adjusted padding */
+            border-radius: 15px;
+            background-color: #fefefe; /* Very light, almost white pink background for sections */
+            border: 1px solid #fdeff4; /* Softer lighter pink border */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 140px; /* Ensure a minimum width for columns */
+            height: 800px; /* Fixed height for both columns */
+        }
+        @media (min-width: 768px) {
+            .babies-section, .parents-section {
+                padding: 15px; /* Original padding */
+                height: 900px; /* Taller on larger screens */
+            }
+        }
+
+        .babies-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Adjusted vertical gap between baby cards */
+            width: 100%;
+            align-items: center;
+            overflow-y: auto; /* Enable scrolling if content exceeds height */
+            flex-grow: 1; /* Allow grid to take available height */
+            padding-right: 5px; /* Space for scrollbar */
+        }
+        .babies-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+        .babies-grid::-webkit-scrollbar-track {
+            background: #fdf2f8; /* Softer light pink scrollbar track */
+            border-radius: 10px;
+        }
+        .babies-grid::-webkit-scrollbar-thumb {
+            background: #f9d8e5; /* Softer pink scrollbar thumb */
+            border-radius: 10px;
+        }
+        .babies-grid::-webkit-scrollbar-thumb:hover {
+            background: #f29ecf; /* Softer darker pink on hover */
+        }
+        @media (min-width: 768px) {
+            .babies-grid {
+                gap: 15px; /* Original gap */
+            }
+        }
+
+        .baby-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 8px; /* Adjusted padding */
+            border: 2px dashed #f9d8e5; /* Softer pink dashed border */
+            text-align: center;
+            min-height: 300px; /* Increased min-height to accommodate wider image and dropped card */
+            display: flex; /* Make it a flex container */
+            flex-direction: column; /* Stack contents vertically */
+            align-items: center;
+            justify-content: space-around; /* Distribute space vertically */
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            position: relative;
+            width: 100%; /* Take full width of its flex container */
+            max-width: 220px; /* Wider max width for individual baby cards */
+        }
+        .baby-card.drag-over {
+            background-color: #fbe0ec; /* Softer highlight on drag over */
+            border-color: #d9669e; /* Softer darker pink border */
+        }
+        @media (min-width: 768px) {
+            .baby-card {
+                padding: 15px;
+                min-height: 380px; /* Increased min-height for desktop */
+                max-width: 350px; /* Allow wider cards on larger screens */
+            }
+        }
+        .baby-image {
+            width: 100%;
+            max-width: 140px; /* Adjusted max width for wider cards */
+            height: auto;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-bottom: 5px; /* Adjusted margin */
+            border: 2px solid #eeb4d2; /* Softer medium pink border */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0; /* Prevent image from shrinking too much */
+        }
+        @media (min-width: 768px) {
+            .baby-image {
+                max-width: 200px; /* Wider on larger screens */
+                margin-bottom: 10px;
+            }
+        }
+        .baby-card .placeholder-text {
+            color: #a6959b; /* Softer gray-pink */
+            font-style: italic;
+            font-size: 0.75em; /* Adjusted font size */
+        }
+        @media (min-width: 768px) {
+            .baby-card .placeholder-text {
+                font-size: 0.85em;
+            }
+        }
+
+        /* Parent Combinations Section */
+        .parents-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px; /* Adjusted vertical gap between parent cards */
+            width: 100%;
+            align-items: center;
+            height: 100%; /* Take full height of parent section */
+            overflow-y: auto; /* Enable scrolling if content exceeds height */
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            border: 1px solid #fdeff4; /* Softer lighter pink border */
+            box-sizing: border-box; /* Include padding in height calculation */
+        }
+        .parents-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        .parents-list::-webkit-scrollbar-track {
+            background: #fdf2f8; /* Softer light pink scrollbar track */
+            border-radius: 10px;
+        }
+        .parents-list::-webkit-scrollbar-thumb {
+            background: #f9d8e5; /* Softer pink scrollbar thumb */
+            border-radius: 10px;
+        }
+        .parents-list::-webkit-scrollbar-thumb:hover {
+            background: #f29ecf; /* Softer darker pink on hover */
+        }
+        @media (min-width: 768px) {
+            .parents-list {
+                gap: 15px;
+            }
+        }
+        .parent-card {
+            background-color: #fdf6fa; /* Softer lighter pink for draggable cards */
+            color: #7a4d64; /* Softer darker pink text */
+            padding: 8px; /* Adjusted padding */
+            border-radius: 12px;
+            border: 2px solid #f9d8e5; /* Softer pink border */
+            font-size: 0.8rem; /* Adjusted font size */
+            font-weight: 600;
+            cursor: grab;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px; /* Adjusted gap */
+            width: 100%; /* Take full width of its flex container */
+            max-width: 180px; /* Max width for individual parent cards */
+            flex-shrink: 0;
+            touch-action: none;
+        }
+        @media (min-width: 768px) {
+            .parent-card {
+                padding: 15px;
+                font-size: 1rem;
+                gap: 8px;
+                max-width: 300px;
+            }
+        }
+        .parent-card:hover {
+            background-color: #fbe0ec; /* Softer even lighter pink on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .parent-card.dragging {
+            opacity: 0.6;
+            border-style: dashed;
+        }
+        .parent-card.hidden {
+            display: none;
+        }
+
+        /* Dropped Parent Card Styling within Baby Card */
+        .baby-card .dropped-parent-card {
+            position: static;
+            transform: none;
+            width: calc(100% - 16px);
+            height: auto;
+            margin-top: 10px;
+            background-color: #f29ecf; /* Softer medium pink when dropped */
+            color: white;
+            border-color: #d9669e; /* Softer darker pink border */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: default;
+            padding: 6px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 3px;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+        @media (min-width: 768px) {
+            .baby-card .dropped-parent-card {
+                padding: 8px;
+                width: calc(100% - 30px);
+                gap: 4px;
+            }
+        }
+        .baby-card .dropped-parent-card .celebrity-images-wrapper {
+            margin-bottom: 3px;
+        }
+        .baby-card .dropped-parent-card .celebrity-image {
+            width: 35px;
+            height: 35px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+        @media (min-width: 768px) {
+            .baby-card .dropped-parent-card .celebrity-image {
+                width: 40px;
+                height: 40px;
+            }
+        }
+        .baby-card .dropped-parent-card .names-span {
+            font-weight: 700;
+            color: white;
+            font-size: 0.85rem;
+        }
+        @media (min-width: 768px) {
+            .baby-card .dropped-parent-card .names-span {
+                font-size: 0.95rem;
+            }
+        }
+        .baby-card .undo-button {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: #f56565; /* Red for undo, provides good contrast */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.6em;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            z-index: 11;
+        }
+        @media (min-width: 768px) {
+            .baby-card .undo-button {
+                bottom: 8px;
+                right: 8px;
+                width: 22px;
+                height: 22px;
+                font-size: 0.7em;
+            }
+        }
+
+        .celebrity-images-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 3px;
+        }
+        .celebrity-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        @media (min-width: 768px) {
+            .celebrity-image {
+                width: 50px;
+                height: 50px;
+                gap: 5px;
+            }
+        }
+        .names-span {
+            font-size: 0.85rem;
+            color: #7a4d64; /* Softer darker pink text */
+            text-align: center;
+        }
+        @media (min-width: 768px) {
+            .names-span {
+                font-size: 0.95rem;
+            }
+        }
+        .action-button {
+            background-color: #d9669e; /* Softer darker pink for action buttons */
+            color: white;
+            padding: 8px 18px;
+            border-radius: 10px;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        @media (min-width: 768px) {
+            .action-button {
+                padding: 12px 25px;
+                font-size: 1.1rem;
+            }
+        }
+        .action-button:hover:not(:disabled) {
+            background-color: #c45a8e; /* Softer even darker pink on hover */
+            transform: translateY(-1px);
+        }
+        .action-button:disabled {
+            background-color: #cbd5e0; /* Gray when disabled */
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            width: 90%;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        @media (min-width: 768px) {
+            .modal-content {
+                padding: 30px;
+                max-width: 400px;
+            }
+        }
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+        .modal-content h2 {
+            color: #7a4d64; /* Softer darker pink for modal title */
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+        @media (min-width: 768px) {
+            .modal-content h2 {
+                margin-bottom: 15px;
+                font-size: 1.8rem;
+            }
+        }
+        .modal-content p {
+            color: #947e88; /* Softer pink-friendly gray for modal text */
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        @media (min-width: 768px) {
+            .modal-content p {
+                margin-bottom: 25px;
+                font-size: 1.1rem;
+            }
+        }
+        .modal-close-button {
+            background-color: #d9669e; /* Softer darker pink for modal button */
+            color: white;
+            padding: 6px 15px;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        @media (min-width: 768px) {
+            .modal-close-button {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+        }
+        .modal-close-button:hover {
+            background-color: #c45a8e; /* Softer even darker pink on hover */
+        }
+
+        /* Styles for the touch-dragged clone */
+        .touch-dragging-clone {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.8;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+            transform: translate(-50%, -50%);
+            background-color: #fdf6fa; /* Match parent-card background */
+            color: #7a4d64; /* Match parent-card text */
+            padding: 8px;
+            border-radius: 12px;
+            border: 2px solid #f9d8e5; /* Match parent-card border */
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 140px;
+        }
+        .touch-dragging-clone .celebrity-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .touch-dragging-clone .names-span {
+            font-size: 0.85rem;
+            color: #7a4d64;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <!-- ... (full code as provided by you) ... -->
+    <div class="game-container">
+        <h1 class="text-3xl font-bold text-rose-800 mb-4">Guess Dat Baby!</h1>
+        <p class="text-pink-700 mb-6">Drag a parent combination card onto the baby picture you think it matches!</p>
+
+        <div class="game-content">
+            <div class="babies-section">
+                <h2 class="text-2xl font-semibold text-rose-700 mb-6">Baby Pictures</h2>
+                <div id="babies-container" class="babies-grid">
+                    <!-- Baby cards will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <div class="parents-section">
+                <h2 class="text-2xl font-semibold text-rose-700 mb-6">Parent Combinations</h2>
+                <div id="parents-container" class="parents-list">
+                    <!-- Parent cards will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <button id="submit-button" class="action-button mt-8" disabled>Submit All Answers</button>
+    </div>
+
+    <!-- Custom Modal for messages (instead of alert()) -->
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="modal-title"></h2>
+            <p id="modal-message"></p>
+            <button id="modal-close-button" class="modal-close-button">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Define core people and celebrity lists
+        const sisterInLaw = 'Sister-in-Law';
+        const brotherInLaw = 'Brother-in-Law';
+        const maleCelebrities = [
+            'Ryan Reynolds', 'Chris Hemsworth', 'Leonardo DiCaprio', 'Brad Pitt',
+            'Dwayne "The Rock" Johnson', 'George Clooney', 'Will Smith', 'Tom Hanks'
+        ];
+        const femaleCelebrities = [
+            'Scarlett Johansson', 'Jennifer Aniston', 'Angelina Jolie', 'Gal Gadot',
+            'Sandra Bullock', 'Julia Roberts', 'Beyoncé', 'Rihanna'
+        ];
+
+        // Generate all possible parent combinations
+        // Each combination needs a unique ID for drag-and-drop tracking
+        let allPossibleParentCombinations = [];
+        let combinationIdCounter = 0;
+        maleCelebrities.forEach(male => {
+            allPossibleParentCombinations.push({ id: `combo-${combinationIdCounter++}`, mom: sisterInLaw, dad: male });
+        });
+        femaleCelebrities.forEach(female => {
+            allPossibleParentCombinations.push({ id: `combo-${combinationIdCounter++}`, mom: brotherInLaw, dad: female });
+        });
+
+        // Game data: baby images and their *actual* correct parents.
+        const gameData = [
+            {
+                babyId: 'baby1',
+                babyImage: 'https://placehold.co/300x300/fdf6fa/7a4d64?text=Baby+1', /* Softer pink placeholder */
+                correctParents: { mom: sisterInLaw, dad: 'Ryan Reynolds' }
+            },
+            {
+                babyId: 'baby2',
+                babyImage: 'https://placehold.co/300x300/fdf6fa/7a4d64?text=Baby+2', /* Softer pink placeholder */
+                correctParents: { mom: brotherInLaw, dad: 'Angelina Jolie' }
+            },
+            {
+                babyId: 'baby3',
+                babyImage: 'https://placehold.co/300x300/fdf6fa/7a4d64?text=Baby+3', /* Softer pink placeholder */
+                correctParents: { mom: sisterInLaw, dad: 'Dwayne "The Rock" Johnson' }
+            },
+            {
+                babyId: 'baby4',
+                babyImage: 'https://placehold.co/300x300/fdf6fa/7a4d64?text=Baby+4', /* Softer pink placeholder */
+                correctParents: { mom: brotherInLaw, dad: 'Beyoncé' }
+            },
+            {
+                babyId: 'baby5',
+                babyImage: 'https://placehold.co/300x300/fdf6fa/7a4d64?text=Baby+5', /* Softer pink placeholder */
+                correctParents: { mom: sisterInLaw, dad: 'Leonardo DiCaprio' }
+            },
+            {
+                babyId: 'baby6',
+                babyImage: 'https://placehold.co/300x300/fdf6fa/7a4d64?text=Baby+6', /* Softer pink placeholder */
+                correctParents: { mom: brotherInLaw, dad: 'Gal Gadot' }
+            }
+            // Add more baby data here as needed!
+        ];
+
+        // Celebrity image mapping. Replace these with actual image URLs!
+        const celebrityImages = {
+            'Sister-in-Law': 'https://placehold.co/60x60/fce8f0/7a4d64?text=SIL', /* Softer pink placeholder */
+            'Brother-in-Law': 'https://placehold.co/60x60/fce8f0/7a4d64?text=BIL', /* Softer pink placeholder */
+            'Ryan Reynolds': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=RR', /* Softer pink placeholder */
+            'Chris Hemsworth': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=CH', /* Softer pink placeholder */
+            'Scarlett Johansson': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=SJ', /* Softer pink placeholder */
+            'Jennifer Aniston': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=JA', /* Softer pink placeholder */
+            'Leonardo DiCaprio': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=LD', /* Softer pink placeholder */
+            'Angelina Jolie': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=AJ', /* Softer pink placeholder */
+            'Brad Pitt': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=BP', /* Softer pink placeholder */
+            'Gal Gadot': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=GG', /* Softer pink placeholder */
+            'Dwayne "The Rock" Johnson': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=TRJ', /* Softer pink placeholder */
+            'Sandra Bullock': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=SB', /* Softer pink placeholder */
+            'Tom Hanks': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=TH', /* Softer pink placeholder */
+            'Julia Roberts': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=JR', /* Softer pink placeholder */
+            'George Clooney': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=GC', /* Softer pink placeholder */
+            'Beyoncé': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=B', /* Softer pink placeholder */
+            'Will Smith': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=WS', /* Softer pink placeholder */
+            'Rihanna': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=R' /* Softer pink placeholder */
+        };
+
+        // State to manage current matches: { babyId: { comboId: '...', mom: '...', dad: '...' } }
+        let currentMatches = {};
+        let gameSubmitted = false; // Flag to prevent further changes after submission
+
+        // Get DOM elements
+        const babiesContainer = document.getElementById('babies-container');
+        const parentsContainer = document.getElementById('parents-container');
+        const submitButton = document.getElementById('submit-button');
+
+        // Modal elements for custom messages (instead of alert/confirm)
+        const messageModal = document.getElementById('message-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalCloseButton = document.getElementById('modal-close-button');
+
+        // Function to show the custom modal
+        function showModal(title, message) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            messageModal.classList.add('show');
+        }
+
+        // Function to hide the custom modal
+        function hideModal() {
+            messageModal.classList.remove('show');
+        }
+
+        // Event listener for modal close button
+        modalCloseButton.addEventListener('click', hideModal);
+
+        // Utility function to shuffle an array (Fisher-Yates algorithm)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+            }
+            return array;
+        }
+
+        // --- Drag and Drop Logic (Unified for Mouse and Touch) ---
+
+        let draggedItem = null; // Stores the currently dragged parent card element (original)
+        let draggedClone = null; // Stores the clone element for touch dragging
+        let dragSourceParent = null; // Reference to the original parent container for mouse drag
+        let currentDropTarget = null; // The baby card currently being hovered/touched over
+
+        // Helper function to create a visual clone for touch dragging
+        function createDragClone(originalElement) {
+            const clone = originalElement.cloneNode(true);
+            clone.classList.add('touch-dragging-clone');
+            clone.style.position = 'fixed';
+            clone.style.left = '0px';
+            clone.style.top = '0px';
+            document.body.appendChild(clone);
+            return clone;
+        }
+
+        // Helper function to get the element under a given point (for touch)
+        function getElementUnderPoint(x, y) {
+            // Hide the clone temporarily to find the element underneath
+            if (draggedClone) draggedClone.style.display = 'none';
+            const element = document.elementFromPoint(x, y);
+            if (draggedClone) draggedClone.style.display = 'block';
+            return element;
+        }
+
+        // --- Mouse Drag Events ---
+        function handleDragStart(event) {
+            if (gameSubmitted) return;
+
+            draggedItem = event.target;
+            dragSourceParent = draggedItem.parentNode; // Store original parent
+            event.dataTransfer.setData('text/plain', draggedItem.dataset.comboId);
+            event.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => {
+                draggedItem.classList.add('dragging');
+            }, 0);
+        }
+
+        function handleDragEnd(event) {
+            if (draggedItem) {
+                draggedItem.classList.remove('dragging');
+                draggedItem = null;
+            }
+            // Reset drag-over state on all baby cards
+            document.querySelectorAll('.baby-card').forEach(card => card.classList.remove('drag-over'));
+            currentDropTarget = null;
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            if (gameSubmitted) return;
+
+            const targetBabyCard = event.target.closest('.baby-card');
+            if (currentDropTarget && currentDropTarget !== targetBabyCard) {
+                currentDropTarget.classList.remove('drag-over');
+            }
+            if (targetBabyCard && !currentMatches[targetBabyCard.dataset.babyId]) {
+                targetBabyCard.classList.add('drag-over');
+                currentDropTarget = targetBabyCard;
+            } else {
+                currentDropTarget = null;
+            }
+            event.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDragLeave(event) {
+            if (gameSubmitted) return;
+            const targetBabyCard = event.target.closest('.baby-card');
+            if (targetBabyCard) {
+                targetBabyCard.classList.remove('drag-over');
+            }
+            if (currentDropTarget === targetBabyCard) {
+                currentDropTarget = null;
+            }
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            if (gameSubmitted) return;
+
+            const comboId = event.dataTransfer.getData('text/plain');
+            const targetBabyCard = event.target.closest('.baby-card');
+
+            // Remove drag-over highlight from any target
+            document.querySelectorAll('.baby-card').forEach(card => card.classList.remove('drag-over'));
+            currentDropTarget = null;
+
+            if (!targetBabyCard || !comboId) {
+                return; // Not a valid drop target or no item was dragged
+            }
+
+            const babyId = targetBabyCard.dataset.babyId;
+
+            // Check if this baby already has a match
+            if (currentMatches[babyId]) {
+                showModal('Oops!', 'This baby already has a match. Please undo the current match first if you want to change it.');
+                return;
+            }
+
+            performDropLogic(babyId, comboId, targetBabyCard);
+        }
+
+        // --- Touch Drag Events ---
+        function handleTouchStart(event) {
+            if (gameSubmitted) return;
+            // Only handle single touch for dragging
+            if (event.touches.length !== 1) return;
+
+            const touch = event.touches[0];
+            const target = event.target.closest('.parent-card');
+
+            if (target) {
+                event.preventDefault(); // Prevent scrolling/zooming
+                draggedItem = target;
+                dragSourceParent = draggedItem.parentNode; // Store original parent
+                draggedClone = createDragClone(draggedItem);
+
+                // Calculate initial offset for smoother drag
+                const rect = draggedItem.getBoundingClientRect();
+                draggedClone.style.left = `${touch.clientX}px`;
+                draggedClone.style.top = `${touch.clientY}px`;
+
+                draggedItem.classList.add('dragging'); // Hide original
+            }
+        }
+
+        function handleTouchMove(event) {
+            if (!draggedItem || gameSubmitted) return;
+            event.preventDefault(); // Prevent scrolling
+
+            const touch = event.touches[0];
+            if (!touch) return;
+
+            // Move the clone
+            draggedClone.style.left = `${touch.clientX}px`;
+            draggedClone.style.top = `${touch.clientY}px`;
+
+            // Check for potential drop targets
+            const elementUnderFinger = getElementUnderPoint(touch.clientX, touch.clientY);
+            const potentialTarget = elementUnderFinger ? elementUnderFinger.closest('.baby-card') : null;
+
+            if (currentDropTarget && currentDropTarget !== potentialTarget) {
+                currentDropTarget.classList.remove('drag-over');
+            }
+
+            if (potentialTarget && !currentMatches[potentialTarget.dataset.babyId]) {
+                potentialTarget.classList.add('drag-over');
+                currentDropTarget = potentialTarget;
+            } else {
+                currentDropTarget = null;
+            }
+        }
+
+        function handleTouchEnd(event) {
+            if (!draggedItem || gameSubmitted) return;
+
+            // Remove drag-over highlight from any target
+            document.querySelectorAll('.baby-card').forEach(card => card.classList.remove('drag-over'));
+
+            if (draggedClone) {
+                draggedClone.remove();
+                draggedClone = null;
+            }
+
+            draggedItem.classList.remove('dragging'); // Show original again
+
+            if (currentDropTarget) {
+                const babyId = currentDropTarget.dataset.babyId;
+                const comboId = draggedItem.dataset.comboId;
+
+                // Check if this baby already has a match (redundant but good for safety)
+                if (currentMatches[babyId]) {
+                    showModal('Oops!', 'This baby already has a match. Please undo the current match first if you want to change it.');
+                } else {
+                    performDropLogic(babyId, comboId, currentDropTarget);
+                }
+            }
+            draggedItem = null;
+            currentDropTarget = null;
+        }
+
+        // --- Core Drop Logic (called by both mouse and touch) ---
+        function performDropLogic(babyId, comboId, targetBabyCard) {
+            const comboData = allPossibleParentCombinations.find(combo => combo.id === comboId);
+            if (!comboData) {
+                console.error('Dropped combo data not found:', comboId);
+                return;
+            }
+
+            // Store the match
+            currentMatches[babyId] = comboData;
+
+            // Visually move the card to the baby card
+            renderDroppedParentCard(targetBabyCard, comboData);
+
+            // Hide the original draggable card from the parents list
+            const originalParentCard = document.getElementById(comboId);
+            if (originalParentCard) {
+                originalParentCard.classList.add('hidden');
+            }
+
+            checkSubmissionReadiness();
+        }
+
+        // Function to render the dropped parent card inside the baby card
+        function renderDroppedParentCard(babyCardElement, comboData) {
+            // Clear any existing dropped card in this baby card
+            const existingDroppedCard = babyCardElement.querySelector('.dropped-parent-card');
+            if (existingDroppedCard) {
+                existingDroppedCard.remove();
+            }
+
+            // Create the new dropped card element
+            const droppedCard = document.createElement('div');
+            droppedCard.classList.add('dropped-parent-card', 'rounded-lg', 'p-3', 'flex', 'flex-col', 'items-center', 'justify-center');
+            droppedCard.dataset.comboId = comboData.id; // Store comboId for undo
+
+            const imagesWrapper = document.createElement('div');
+            imagesWrapper.classList.add('celebrity-images-wrapper');
+
+            const momImage = document.createElement('img');
+            momImage.src = celebrityImages[comboData.mom] || 'https://placehold.co/60x60/fdf6fa/7a4d64?text=Unknown'; /* Softer pink placeholder */
+            momImage.alt = comboData.mom;
+            momImage.classList.add('celebrity-image');
+
+            const dadImage = document.createElement('img');
+            dadImage.src = celebrityImages[comboData.dad] || 'https://placehold.co/60x60/fdf6fa/7a4d64?text=Unknown'; /* Softer pink placeholder */
+            dadImage.alt = comboData.dad;
+            dadImage.classList.add('celebrity-image');
+
+            imagesWrapper.appendChild(momImage);
+            imagesWrapper.appendChild(dadImage);
+
+            const namesSpan = document.createElement('span');
+            namesSpan.classList.add('names-span');
+            namesSpan.textContent = `${comboData.mom} & ${comboData.dad}`;
+
+            droppedCard.appendChild(imagesWrapper);
+            droppedCard.appendChild(namesSpan);
+
+            // Add an undo button
+            const undoButton = document.createElement('button');
+            undoButton.classList.add('undo-button');
+            undoButton.textContent = 'X'; // Simple 'X' for undo
+            undoButton.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent triggering parent drop logic
+                undoMatch(babyCardElement.dataset.babyId, comboData.id);
+            });
+            droppedCard.appendChild(undoButton);
+
+            // Append the dropped card to the baby card (it will flow below the baby image)
+            babyCardElement.appendChild(droppedCard);
+            babyCardElement.querySelector('.placeholder-text').style.display = 'none'; // Hide placeholder
+        }
+
+        // Function to undo a match
+        function undoMatch(babyId, comboId) {
+            if (gameSubmitted) return;
+
+            // Remove the match from currentMatches
+            delete currentMatches[babyId];
+
+            // Show the original parent card back in the parents list
+            const originalParentCard = document.getElementById(comboId);
+            if (originalParentCard) {
+                originalParentCard.classList.remove('hidden');
+            }
+
+            // Remove the dropped card from the baby card
+            const babyCardElement = document.querySelector(`.baby-card[data-baby-id="${babyId}"]`);
+            if (babyCardElement) {
+                const droppedCard = babyCardElement.querySelector('.dropped-parent-card');
+                if (droppedCard) {
+                    droppedCard.remove();
+                }
+                babyCardElement.querySelector('.placeholder-text').style.display = 'block'; // Show placeholder
+            }
+
+            checkSubmissionReadiness();
+        }
+
+        // Function to check if all babies have a match and enable/disable submit button
+        function checkSubmissionReadiness() {
+            const allMatched = Object.keys(currentMatches).length === gameData.length;
+            submitButton.disabled = !allMatched;
+        }
+
+        // Function to render all baby cards and parent combination cards
+        function renderGame() {
+            babiesContainer.innerHTML = ''; // Clear previous baby cards
+            parentsContainer.innerHTML = ''; // Clear previous parent cards
+            currentMatches = {}; // Reset matches
+            gameSubmitted = false; // Reset submission flag
+            submitButton.disabled = true; // Disable submit button initially
+
+            // Shuffle game data (baby order)
+            shuffleArray(gameData);
+            // Shuffle all possible parent combinations (for display order)
+            shuffleArray(allPossibleParentCombinations);
+
+            // Render Baby Cards
+            gameData.forEach((baby, index) => {
+                const babyCard = document.createElement('div');
+                babyCard.classList.add('baby-card');
+                babyCard.dataset.babyId = baby.babyId; // Store babyId for drop target
+
+                const babyTitle = document.createElement('h3');
+                babyTitle.classList.add('text-lg', 'font-semibold', 'text-rose-700'); /* Pink text */
+                babyTitle.textContent = `Baby ${index + 1}`;
+
+                const babyImage = document.createElement('img');
+                babyImage.src = baby.babyImage;
+                babyImage.alt = `Baby ${index + 1}`;
+                babyImage.classList.add('baby-image');
+
+                const placeholderText = document.createElement('p');
+                placeholderText.classList.add('placeholder-text');
+                placeholderText.textContent = 'Drag parent card here';
+
+                babyCard.appendChild(babyTitle);
+                babyCard.appendChild(babyImage);
+                babyCard.appendChild(placeholderText);
+
+                // Add mouse drag-and-drop event listeners to baby cards (drop targets)
+                babyCard.addEventListener('dragover', handleDragOver);
+                babyCard.addEventListener('dragleave', handleDragLeave);
+                babyCard.addEventListener('drop', handleDrop);
+
+                babiesContainer.appendChild(babyCard);
+            });
+
+            // Render Parent Combination Cards (draggable items)
+            allPossibleParentCombinations.forEach(combo => {
+                const parentCard = document.createElement('div');
+                parentCard.classList.add('parent-card');
+                parentCard.setAttribute('draggable', 'true'); // Make it draggable for mouse
+                parentCard.id = combo.id; // Set ID for tracking during drag-and-drop
+                parentCard.dataset.comboId = combo.id; // Also store in dataset
+
+                const imagesWrapper = document.createElement('div');
+                imagesWrapper.classList.add('celebrity-images-wrapper');
+
+                const momImage = document.createElement('img');
+                momImage.src = celebrityImages[combo.mom] || 'https://placehold.co/60x60/fdf6fa/7a4d64?text=Unknown'; /* Softer pink placeholder */
+                momImage.alt = combo.mom;
+                momImage.classList.add('celebrity-image');
+
+                const dadImage = document.createElement('img');
+                dadImage.src = celebrityImages[combo.dad] || 'https://placehold.co/60x60/fdf6fa/7a4d64?text=Unknown'; /* Softer pink placeholder */
+                dadImage.alt = combo.dad;
+                dadImage.classList.add('celebrity-image');
+
+                imagesWrapper.appendChild(momImage);
+                imagesWrapper.appendChild(dadImage);
+
+                const namesSpan = document.createElement('span');
+                namesSpan.classList.add('names-span');
+                namesSpan.textContent = `${combo.mom} & ${combo.dad}`;
+
+                parentCard.appendChild(imagesWrapper);
+                parentCard.appendChild(namesSpan);
+
+                // Add mouse drag-and-drop event listeners to parent cards (draggable sources)
+                parentCard.addEventListener('dragstart', handleDragStart);
+                parentCard.addEventListener('dragend', handleDragEnd);
+
+                // Add touch event listeners for mobile drag-and-drop
+                parentCard.addEventListener('touchstart', handleTouchStart);
+                parentCard.addEventListener('touchmove', handleTouchMove);
+                parentCard.addEventListener('touchend', handleTouchEnd);
+
+                parentsContainer.appendChild(parentCard);
+            });
+        }
+
+        // Event listener for the "Submit All Answers" button
+        submitButton.addEventListener('click', () => {
+            if (gameSubmitted) return; // Prevent multiple submissions
+
+            gameSubmitted = true; // Set flag to true
+            submitButton.disabled = true; // Disable the submit button after submission
+
+            // Disable all drag-and-drop interactions for both mouse and touch
+            document.querySelectorAll('.parent-card').forEach(card => {
+                card.setAttribute('draggable', 'false');
+                card.removeEventListener('touchstart', handleTouchStart);
+                card.removeEventListener('touchmove', handleTouchMove);
+                card.removeEventListener('touchend', handleTouchEnd);
+            });
+            document.querySelectorAll('.baby-card').forEach(card => {
+                card.removeEventListener('dragover', handleDragOver);
+                card.removeEventListener('dragleave', handleDragLeave);
+                card.removeEventListener('drop', handleDrop);
+                // Hide undo buttons
+                const undoBtn = card.querySelector('.undo-button');
+                if (undoBtn) undoBtn.style.display = 'none';
+            });
+
+            // Log the player's selections to the console.
+            console.log("Player's Submissions:", currentMatches);
+
+            // Show a confirmation modal to the player
+            showModal('Answers Submitted!', 'Thank you for playing! The answers will be revealed live!');
+        });
+
+        // Initialize the game when the page loads
+        window.onload = renderGame;
+    </script>
 </body>
 </html>
