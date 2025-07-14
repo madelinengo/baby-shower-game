@@ -541,13 +541,13 @@
 
     <script>
         // Define core people and celebrity lists
-        const sisterInLaw = 'Sister-in-Law';
-        const brotherInLaw = 'Brother-in-Law';
+        const mommy = 'Mommy';
+        const daddy = 'Daddy';
         const maleCelebrities = [
-            'Owen Wilson', 'Benedict Cumberbatch', 'Rupert Grint', 'Dad'
+            'Owen Wilson', 'Benedict Cumberbatch', 'Rupert Grint'
         ];
         const femaleCelebrities = [
-            'Priyanka Chopra', 'Halle Berry', 'Zendaya', 'Mindy Kaling', 'Mom'
+            'Priyanka Chopra', 'Halle Berry', 'Zendaya', 'Mindy Kaling'
         ];
 
         // Generate all possible parent combinations
@@ -555,10 +555,10 @@
         let allPossibleParentCombinations = [];
         let combinationIdCounter = 0;
         maleCelebrities.forEach(male => {
-            allPossibleParentCombinations.push({ id: `combo-${combinationIdCounter++}`, mom: sisterInLaw, dad: male });
+            allPossibleParentCombinations.push({ id: `combo-${combinationIdCounter++}`, mom: mommy, dad: male });
         });
         femaleCelebrities.forEach(female => {
-            allPossibleParentCombinations.push({ id: `combo-${combinationIdCounter++}`, mom: brotherInLaw, dad: female });
+            allPossibleParentCombinations.push({ id: `combo-${combinationIdCounter++}`, mom: daddy, dad: female });
         });
 
         // Game data: baby images and their *actual* correct parents.
@@ -566,46 +566,46 @@
             {
                 babyId: 'baby1',
                 babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/baby_1_dad_priyanka.jpg', /* Softer pink placeholder */
-                correctParents: { mom: brotherInLaw, dad: 'Priyanka Chopra' }
+                correctParents: { mom: daddy, dad: 'Priyanka Chopra' }
             },
             {
                 babyId: 'baby2',
                 babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/baby_2_mom_owen.jpg', /* Softer pink placeholder */
-                correctParents: { mom: sisterInLaw, dad: 'Owen Wilson' }
+                correctParents: { mom: mommy, dad: 'Owen Wilson' }
             },
             {
                 babyId: 'baby3',
                 babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/baby_3_dad_halle.jpg', /* Softer pink placeholder */
-                correctParents: { mom: brotherInLaw, dad: 'Halle Berry' }
+                correctParents: { mom: daddy, dad: 'Halle Berry' }
             },
             {
                 babyId: 'baby4',
                 babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/baby_4_dad_mom_light.jpg', /* Softer pink placeholder */
-                correctParents: { mom: sisterInLaw, dad: brotherInLaw }
+                correctParents: { mom: mommy, dad: daddy }
             },
             {
                 babyId: 'baby5',
                 babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/baby_5_dad_mom.jpg', /* Softer pink placeholder */
-                correctParents: { mom: sisterInLaw, dad: 'Leonardo DiCaprio' }
+                correctParents: { mom: mommy, dad: 'Leonardo DiCaprio' }
             },
             {
                 babyId: 'baby6',
                 babyImage: 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/baby_6_dad_zendaya.jpg', /* Softer pink placeholder */
-                correctParents: { mom: brotherInLaw, dad: 'Zendaya' }
+                correctParents: { mom: daddy, dad: 'Zendaya' }
             }
             // Add more baby data here as needed!
         ];
 
         // Celebrity image mapping. Replace these with actual image URLs!
         const celebrityImages = {
-            'Sister-in-Law': 'https://placehold.co/60x60/fce8f0/7a4d64?text=SIL', /* Softer pink placeholder */
-            'Brother-in-Law': 'https://placehold.co/60x60/fce8f0/7a4d64?text=BIL', /* Softer pink placeholder */
-            'Owen Wilson': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=RR', /* Softer pink placeholder */
-            'Benedict Cumberbatch': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=CH', /* Softer pink placeholder */
-            'Rupert Grint': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=SJ', /* Softer pink placeholder */
-            'Priyanka Chopra': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=JA', /* Softer pink placeholder */
-            'Halle Berry': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=LD', /* Softer pink placeholder */
-            'Mindy Kaling': 'https://placehold.co/60x60/fdf6fa/7a4d64?text=AJ', /* Softer pink placeholder */
+            'Mommy': 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/mommy.jpg', /* Softer pink placeholder */
+            'Daddy': 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/daddy.jpg', /* Softer pink placeholder */
+            'Owen Wilson': 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/owen.png', /* Softer pink placeholder */
+            'Benedict Cumberbatch': 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/benedict.png', /* Softer pink placeholder */
+            'Rupert Grint': 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/rupert.png', /* Softer pink placeholder */
+            'Priyanka Chopra': 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/priyanka.jpg', /* Softer pink placeholder */
+            'Halle Berry': 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/halle.png', /* Softer pink placeholder */
+            'Mindy Kaling': 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/mindy.jpg', /* Softer pink placeholder */
     
         };
 
