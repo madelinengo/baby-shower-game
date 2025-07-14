@@ -1,0 +1,11 @@
+# Ignore macOS and Windows system files
+.DS_Store
+Thumbs.db
+
+# Ignore log files
+*.log
+
+# Ignore build and dependency folders (if ever needed)
+dist/
+build/
+node_modules/
