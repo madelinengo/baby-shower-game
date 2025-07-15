@@ -223,7 +223,7 @@
             width: 100%; /* Take full width of its flex container */
             max-width: 200px; /* Increased max width for individual parent cards */
             flex-shrink: 0;
-            touch-action: none;
+            /* Removed touch-action: none; to allow native scrolling, handled by JS now */
         }
         @media (min-width: 768px) {
             .parent-card {
@@ -271,7 +271,7 @@
         @media (min-width: 768px) {
             .baby-card .dropped-parent-card {
                 padding: 8px;
-                width: calc(100% - 30px); /* Adjusted for larger padding on baby-card */
+                width: calc(100% - 30px);
                 gap: 4px;
             }
         }
@@ -513,14 +513,14 @@
 
         <div class="game-content">
             <div class="babies-section">
-                <h2 class="text-xl font-semibold text-rose-700 mb-6">Baby Pictures</h2>
+                <h2 class="text-lg font-semibold text-rose-700 mb-6">Baby Pictures</h2>
                 <div id="babies-container" class="babies-grid">
                     <!-- Baby cards will be dynamically loaded here -->
                 </div>
             </div>
 
             <div class="parents-section">
-                <h2 class="text-xl font-semibold text-rose-700 mb-6">Parent Combinations</h2>
+                <h2 class="text-lg font-semibold text-rose-700 mb-6">Parent Combinations</h2>
                 <div id="parents-container" class="parents-list">
                     <!-- Parent cards will be dynamically loaded here -->
                 </div>
@@ -623,7 +623,6 @@
             'Mindy Kaling': 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/mindy.jpg', /* Softer pink placeholder */
             'Zendaya': 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/zendaya.jpeg', /* Softer pink placeholder */
             'Timothee Chalamet': 'https://raw.githubusercontent.com/madelinengo/baby-shower-game/refs/heads/main/images/timothee.png' /* Softer pink placeholder */
-    
         };
 
         // State to manage current matches: { babyId: { comboId: '...', mom: '...', dad: '...' } }
@@ -671,6 +670,9 @@
         let draggedClone = null; // Stores the clone element for touch dragging
         let dragSourceParent = null; // Reference to the original parent container for mouse drag
         let currentDropTarget = null; // The baby card currently being hovered/touched over
+        let startX = 0;
+        let startY = 0;
+        const dragThreshold = 10; // Pixels to move before a drag is initiated
 
         // Helper function to create a visual clone for touch dragging
         function createDragClone(originalElement) {
@@ -772,40 +774,63 @@
         // --- Touch Drag Events ---
         function handleTouchStart(event) {
             if (gameSubmitted) return;
-            // Only handle single touch for dragging
             if (event.touches.length !== 1) return;
 
             const touch = event.touches[0];
             const target = event.target.closest('.parent-card');
 
             if (target) {
-                event.preventDefault(); // Prevent scrolling/zooming
+                startX = touch.clientX;
+                startY = touch.clientY;
                 draggedItem = target;
                 dragSourceParent = draggedItem.parentNode; // Store original parent
-                draggedClone = createDragClone(draggedItem);
 
-                // Calculate initial offset for smoother drag
-                const rect = draggedItem.getBoundingClientRect();
-                draggedClone.style.left = `${touch.clientX}px`;
-                draggedClone.style.top = `${touch.clientY}px`;
-
-                draggedItem.classList.add('dragging'); // Hide original
+                // Do NOT preventDefault here initially, let it scroll.
+                // PreventDefault will be called in touchmove if dragThreshold is met.
             }
         }
 
         function handleTouchMove(event) {
             if (!draggedItem || gameSubmitted) return;
-            event.preventDefault(); // Prevent scrolling
+            if (event.touches.length !== 1) return;
 
             const touch = event.touches[0];
-            if (!touch) return;
+            const currentX = touch.clientX;
+            const currentY = touch.clientY;
+
+            const dx = Math.abs(currentX - startX);
+            const dy = Math.abs(currentY - startY);
+
+            // If a drag hasn't been initiated yet (no clone exists)
+            if (!draggedClone) {
+                // Check if the movement exceeds the drag threshold
+                if (dx > dragThreshold || dy > dragThreshold) {
+                    // If movement is primarily horizontal, initiate drag
+                    if (dx > dy) {
+                        event.preventDefault(); // Prevent default scrolling only when drag is confirmed
+                        draggedClone = createDragClone(draggedItem);
+                        draggedItem.classList.add('dragging'); // Hide original
+                    } else {
+                        // If movement is primarily vertical, it's likely a scroll.
+                        // Reset draggedItem so no drag is initiated.
+                        draggedItem = null;
+                        return;
+                    }
+                } else {
+                    // Movement is within threshold, still not a drag. Allow default scrolling.
+                    return;
+                }
+            } else {
+                // Drag is already initiated, prevent default to ensure smooth dragging
+                event.preventDefault();
+            }
 
             // Move the clone
-            draggedClone.style.left = `${touch.clientX}px`;
-            draggedClone.style.top = `${touch.clientY}px`;
+            draggedClone.style.left = `${currentX}px`;
+            draggedClone.style.top = `${currentY}px`;
 
             // Check for potential drop targets
-            const elementUnderFinger = getElementUnderPoint(touch.clientX, touch.clientY);
+            const elementUnderFinger = getElementUnderPoint(currentX, currentY);
             const potentialTarget = elementUnderFinger ? elementUnderFinger.closest('.baby-card') : null;
 
             if (currentDropTarget && currentDropTarget !== potentialTarget) {
@@ -846,6 +871,8 @@
             }
             draggedItem = null;
             currentDropTarget = null;
+            startX = 0; // Reset touch start coordinates
+            startY = 0;
         }
 
         // --- Core Drop Logic (called by both mouse and touch) ---
@@ -856,18 +883,13 @@
                 return;
             }
 
-            // Store the match
             currentMatches[babyId] = comboData;
-
-            // Visually move the card to the baby card
             renderDroppedParentCard(targetBabyCard, comboData);
 
-            // Hide the original draggable card from the parents list
             const originalParentCard = document.getElementById(comboId);
             if (originalParentCard) {
                 originalParentCard.classList.add('hidden');
             }
-
             checkSubmissionReadiness();
         }
 
@@ -974,7 +996,7 @@
                 babyCard.dataset.babyId = baby.babyId; // Store babyId for drop target
 
                 const babyTitle = document.createElement('h3');
-                babyTitle.classList.add('text-lg', 'font-semibold', 'text-rose-700'); /* Pink text */
+                babyTitle.classList.add('text-lg', 'font-semibold', 'text-rose-700', 'mb-2'); /* Reduced font size */
                 babyTitle.textContent = `Baby ${index + 1}`;
 
                 const babyImage = document.createElement('img');
